@@ -125,10 +125,10 @@ impl BaiduTTS {
 
 impl Default for BaiduTTS {
     fn default() -> Self {
-        let path_str = &"config.toml".to_string();
-        let path = std::path::Path::new(path_str);
-        if path.exists() {
-            BaiduTTS::new(&path.to_path_buf())
+        let path_str = &"say-config.toml".to_string();
+        let path_c = std::path::Path::new(path_str);
+        if path_c.exists() {
+            BaiduTTS::new(&path_c.to_path_buf())
         } else {
             let exe_path = std::env::current_exe()
                 .unwrap()
@@ -136,7 +136,10 @@ impl Default for BaiduTTS {
                 .parent()
                 .unwrap()
                 .to_owned();
-            let path = exe_path.join(path);
+            let path = exe_path.join(path_str);
+            if !path.exists() {
+                panic!("配置文件不存在:{:?} 或 {:?}",path_c,path);
+            }
             BaiduTTS::new(&path)
         }
 
