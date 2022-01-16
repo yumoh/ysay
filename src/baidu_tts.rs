@@ -2,19 +2,20 @@
 use super::config::*;
 use super::utils::BoxResult;
 use ureq;
-use std::io::Cursor;
-use std::io::Read;
-use rodio::{Decoder, OutputStream, Sink};
+use rodio::{OutputStream, Sink};
+use hound;
+use std::path::PathBuf;
 
+use std::io::{Read,Cursor};
 
 pub struct BaiduTTS {
     config: Config,
-    path: String,
+    path: PathBuf,
     update:bool,
 }
 
 impl BaiduTTS {
-    pub fn new(config_path:&String) -> Self {
+    pub fn new(config_path: &PathBuf) -> Self {
         let config = load_conf(config_path).expect("load config error");
         debug!("[baidu tts init]load config:{:?}",config);
         BaiduTTS {
@@ -76,25 +77,70 @@ impl BaiduTTS {
         Ok(resp)
     }
 
-    pub fn speech(&mut self,text:&String) -> BoxResult<()> {
+    /// droped
+    /// 性能原因，废弃掉
+    #[allow(dead_code)]
+    pub fn speech2(&mut self,text:&String) -> BoxResult<()> {
+        let instant = std::time::Instant::now();
         let resp = self.get_audio_resp(text)?;
-        let mut reader = resp.into_reader();
+        let reader = resp.into_reader();        
         let mut buf:Vec<u8> = Vec::new();
-        reader.read_to_end(&mut buf)?;
+        reader.take(1_024_1024).read_to_end(&mut buf)?;
         let c = Cursor::new(buf);
         let der_source = rodio::decoder::Decoder::new_wav(c)?;
         let (_stream, stream_handle) = OutputStream::try_default().unwrap();
         let sink = Sink::try_new(&stream_handle).unwrap();
-    
+        debug!("speech2 use time:{}",instant.elapsed().as_micros());
         sink.append(der_source);
         sink.sleep_until_end();
         Ok(())
     }
+
+    pub fn speech(&mut self,text:&String) -> BoxResult<()> {
+        let instant = std::time::Instant::now();
+        let resp = self.get_audio_resp(text)?;
+        let reader = resp.into_reader();
+        let wav_reader = hound::WavReader::new(reader)?;
+        let wav_spec = wav_reader.spec();
+        let wav_samples = wav_reader.into_samples::<i16>();
+        
+        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+        let sink = Sink::try_new(&stream_handle).unwrap();
+        
+        let mut wav_iter = wav_samples.into_iter();
+        loop {
+            let data_header:Vec<i16> = wav_iter.by_ref().take(1000).map(|v| {v.unwrap()}).collect();
+            if data_header.len() == 0{
+                break;
+            }
+            let wav_source = rodio::buffer::SamplesBuffer::new(wav_spec.channels, wav_spec.sample_rate,data_header);
+            debug!("speech use time:{}",instant.elapsed().as_micros());
+            sink.append(wav_source);
+        }
+        sink.sleep_until_end();
+        Ok(())
+    }
+
 }
 
 impl Default for BaiduTTS {
     fn default() -> Self {
-        BaiduTTS::new(&"config.toml".to_string())
+        let path_str = &"config.toml".to_string();
+        let path = std::path::Path::new(path_str);
+        if path.exists() {
+            BaiduTTS::new(&path.to_path_buf())
+        } else {
+            let exe_path = std::env::current_exe()
+                .unwrap()
+                .to_owned()
+                .parent()
+                .unwrap()
+                .to_owned();
+            let path = exe_path.join(path);
+            BaiduTTS::new(&path)
+        }
+
+        
     }
 }
 

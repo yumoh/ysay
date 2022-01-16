@@ -11,5 +11,6 @@ env_logger = "0.9"
 toml = "0.5"
 serde = { version = "1", features = ["derive"] }
 rodio = "0.14.0"
+hound = "3.4.0"
 # ureq = {version="2.4",features=["json","charset","native-certs"]}
 ureq = {version="2.4",features=["json","charset","native-certs","tls"]}

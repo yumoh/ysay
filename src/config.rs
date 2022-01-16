@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use serde::{Deserialize,Serialize};
 use toml;
 use super::utils::BoxResult;
@@ -30,13 +32,13 @@ pub struct Config {
 
 
 
-pub fn load_conf(path:&String) -> BoxResult<Config> {
+pub fn load_conf(path:&PathBuf) -> BoxResult<Config> {
     let s = std::fs::read_to_string(path)?;
     let config:Config = toml::from_str(&s)?;
     Ok(config)
 }
 
-pub fn save_conf(path:&String,conf:&Config) -> BoxResult<()> {
+pub fn save_conf(path:&PathBuf,conf:&Config) -> BoxResult<()> {
     let s = toml::to_string_pretty(conf)?;
     std::fs::write(path, s)?;
     Ok(())
