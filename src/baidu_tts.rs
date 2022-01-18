@@ -138,7 +138,10 @@ impl Default for BaiduTTS {
                 .to_owned();
             let path = exe_path.join(path_str);
             if !path.exists() {
-                panic!("配置文件不存在:{:?} 或 {:?}",path_c,path);
+                warn!("配置文件不存在:{}",path.to_str().unwrap());
+                let config = Config::default();
+                save_conf(&path, &config).expect("cache config error");
+                info!("save config on:{}",path.to_str().expect("path invalid"));
             }
             BaiduTTS::new(&path)
         }

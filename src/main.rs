@@ -22,7 +22,6 @@ fn main() {
     if std::path::Path::new(s).exists() {
         utils::sound_file(s);
     } else {
-        // baidu_tts::BaiduTTS::default().speech2(s).expect("speech error");
         baidu_tts::BaiduTTS::default().speech(s).expect("speech error");
     }
 }
