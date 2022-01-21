@@ -1,4 +1,4 @@
-build:
+build-linux:
   stage: build
   retry: 2
   before_script:
@@ -12,4 +12,20 @@ build:
     refs:
       - master
   tags:
-    - local-linux
+    - linux
+
+build-mac:
+  stage: build
+  retry: 2
+  before_script:
+    - echo "语音合成程序构建 失败！" > .status
+  script:
+    - bash build.sh
+    - echo "语音合成程序构建 成功！" > .status
+  after_script:
+    - cat .status | msgbox --pipe --speech
+  only:
+    refs:
+      - master
+  tags:
+    - imac
