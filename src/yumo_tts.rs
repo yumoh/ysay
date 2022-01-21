@@ -1,7 +1,7 @@
 
 
 fn speech(text: &String) -> Result<(), Box<dyn std::error::Error>> {
-    let mut resp = ureq::get("https://nas.dnnmind.com:8088/y-api/tools/tts")
+    let mut resp = ureq::get("https://api.dnnmind.com:8088/y-api/tools/tts")
         .send_json(ureq::json!({"text":text}))?.into_reader();
     let mut content:Vec<u8> = Vec::new();
     resp.read_to_end(&mut content)?;
