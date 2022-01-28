@@ -7,6 +7,7 @@ build-linux:
     - bash build.sh
     - echo "语音合成程序构建 成功！" > .status
   after_script:
+    - msgbox -m "say ${uname} ${arch}"
     - cat .status | msgbox --pipe --speech
   only:
     refs:
@@ -23,6 +24,7 @@ build-mac:
     - bash build.sh
     - echo "语音合成程序构建 成功！" > .status
   after_script:
+    - msgbox -m "say ${uname} ${arch}"
     - cat .status | msgbox --pipe --speech
   only:
     refs:
