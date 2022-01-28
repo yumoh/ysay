@@ -1,13 +1,13 @@
 build-linux:
   stage: build
-  retry: 2
+  retry: 1
   before_script:
     - echo "语音合成程序构建 失败！" > .status
   script:
     - bash build.sh
     - echo "语音合成程序构建 成功！" > .status
   after_script:
-    - msgbox -m "say ${uname} ${arch}"
+    - msgbox -m "say $(uname) $(arch)"
     - cat .status | msgbox --pipe --speech
   only:
     refs:
@@ -15,16 +15,16 @@ build-linux:
   tags:
     - linux
 
-build-mac:
+build-imac:
   stage: build
-  retry: 2
+  retry: 1
   before_script:
     - echo "语音合成程序构建 失败！" > .status
   script:
     - bash build.sh
     - echo "语音合成程序构建 成功！" > .status
   after_script:
-    - msgbox -m "say ${uname} ${arch}"
+    - msgbox -m "say $(uname) $(arch)"
     - cat .status | msgbox --pipe --speech
   only:
     refs:
