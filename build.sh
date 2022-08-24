@@ -3,8 +3,6 @@ set -e
 
 workdir=$(pwd)
 
-
-
 build_local() {
     cargo build --release 
 }
