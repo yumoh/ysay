@@ -1,6 +1,6 @@
 [package]
 name = "say"
-version = "0.2.2"
+version = "0.3.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -8,10 +8,9 @@ edition = "2021"
 [dependencies]
 log = "0.4"
 env_logger = "0.9"
-toml = "0.5"
-uuid = {version="0.8",features=["v4"]}
+structopt="0.3"
+
 serde = { version = "1", features = ["derive"] }
-rodio = "0.14.0"
+rodio = "0.15.0"
 hound = "3.4.0"
-# ureq = {version="2.4",features=["json","charset","native-certs"]}
 ureq = {version="2.4",features=["json","charset","native-certs","tls"]}
