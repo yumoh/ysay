@@ -26,4 +26,8 @@ ARGS:
 - say -s < speech.txt
 
 ### 其它
+
 1.[tts服务](https://git.yumolab.cn:8088/ai-go/tts-serve2)
+2. on linux do `sudo apt-get install libasound2-dev` 
+
+
