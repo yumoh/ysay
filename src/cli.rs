@@ -16,7 +16,10 @@ pub struct SayCli {
     pub file_stream: bool,
     #[structopt(long = "speaker", help = "说话人1-173 默认: 5")]
     pub tts_speaker: Option<u64>,
-    #[structopt(long = "server", help = "使用特定tts服务器,默认自建服务器")]
+    #[structopt(
+        long = "server",
+        help = "使用特定tts服务器,默认自建服务器(https://api.yumolab.cn:8088/tts)"
+    )]
     pub tts_server: Option<String>,
 }
 
