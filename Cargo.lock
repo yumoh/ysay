@@ -1020,7 +1020,7 @@ dependencies = [
 
 [[package]]
 name = "say"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "env_logger",
  "hound",
