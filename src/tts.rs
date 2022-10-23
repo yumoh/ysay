@@ -46,7 +46,7 @@ impl TextToSpeech {
     /// 获取到初始数据后立即播放直到完成
     #[allow(dead_code)]
     pub fn speech(&self, text: &String) -> BoxResult<()> {
-        log::info!("[yumo tts speech] speech {}", &text);
+        log::debug!("[yumo tts speech] speech {}", &text);
         let resp = self.get_audio_resp(text)?;
         PackSequentceStream::new(resp.into_reader()).play()
     }
