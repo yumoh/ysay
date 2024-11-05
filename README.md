@@ -3,10 +3,10 @@
 ### 使用
 
 ```bash
-say 0.3.0
+say 0.3.1
 
 USAGE:
-    say [FLAGS] [OPTIONS] [text]
+    ysay [FLAGS] [OPTIONS] [text]
 
 FLAGS:
         --sf         输入音频流数据
@@ -15,9 +15,11 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --server <tts-server>      使用特定tts服务器,默认自建服务器
-        --speaker <tts-speaker>    说话人1-173 默认: 5
-    -f, --file <vedio-file>        播放音频文件
+    -c, --config <config-path>                 config file path
+        --generate-config <gen-config-path>    generate config to file
+    -o, --output <output-file>                 保存到音频文件
+        --speaker <tts-speaker>                alex,benjamin,anna,diana,default: diana
+    -f, --file <vedio-file>                    播放音频文件
 
 ARGS:
     <text>    消息主体文本
@@ -29,6 +31,7 @@ ARGS:
 
 ### 其它
 
-1.[tts服务](https://git.yumolab.cn:8088/ai-go/tts-serve2)
+1. [tts服务](https://cloud.siliconflow.cn/playground/text-to-speech)
 2. on linux do `sudo apt-get install libasound2-dev`
-3. on macos do `brew install llvm@15 llvm@16 llvm@18`
+3. on macos do `brew install llvm@15 llvm@16 llvm@18 sox`
+4. 安装: `cargo install ysay`
