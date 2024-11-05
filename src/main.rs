@@ -11,6 +11,6 @@ fn main() {
     let cli_args = cli::SayCli::from_args();
     let result = cli::handle_say(&cli_args);
     if let Err(err) = result {
-        log::error!("{:?}", err);
+        log::error!("== err: {:?}", err);
     }
 }

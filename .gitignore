@@ -1,7 +1,8 @@
 /target
 /.vscode
-.*
 *.pyc
 *.xml
 /.idea
 *.lock
+*.log
+.env

@@ -10,36 +10,64 @@ pub struct SayCli {
     pub text: Option<String>,
     #[structopt(short = "f", long = "file", help = "播放音频文件")]
     pub vedio_file: Option<String>,
+    #[structopt(short = "o", long = "output", help = "保存到音频文件")]
+    pub output_file: Option<String>,
     #[structopt(short = "s", help = "使用流输入文本内容")]
     pub text_stream: bool,
     #[structopt(long = "sf", help = "输入音频流数据")]
     pub file_stream: bool,
-    #[structopt(long = "speaker", help = "说话人1-173 默认: 5")]
-    pub tts_speaker: Option<u64>,
-    #[structopt(
-        long = "server",
-        help = "使用特定tts服务器,默认自建服务器(https://api.yumolab.cn:8088/tts)"
-    )]
-    pub tts_server: Option<String>,
+    #[structopt(long = "speaker", help = "alex,benjamin,anna,diana,default: diana")]
+    pub tts_speaker: Option<String>,
+    #[structopt(short="c",long = "config", help = "config file path")]
+    pub config_path: Option<String>,
+    #[structopt(long = "generate-config", help = "generate config to file")]
+    pub gen_config_path: Option<String>,
 }
 
 pub fn handle_say(args: &SayCli) -> BoxResult<()> {
-    log::info!("say: {:?}", args);
-    let mut tts = TextToSpeech::default();
-    if let Some(server) = &args.tts_server {
-        tts = tts.tts_server(server);
+    log::debug!("say: {:?}", args);
+    if let Some(path) = &args.gen_config_path {
+        let path = if path.starts_with('~') {
+            dirs::home_dir().expect("no home dir").join(path.strip_prefix('~').unwrap_or_default())
+        } else {
+            std::path::PathBuf::from(path)
+        };
+        log::info!("generate config file: {:?}", path);
+        TextToSpeech::default().dump(path)?;
+        return Ok(());
     }
-    if let Some(speaker) = args.tts_speaker {
+    let default_config_path = dirs::home_dir().map(|home| home.join(".yumo/tts.toml"));
+    let mut tts = if let Some(path) = &args.config_path {
+        let path = if path.starts_with('~') {
+            dirs::home_dir().expect("no home dir").join(path.strip_prefix('~').unwrap_or_default())
+        } else {
+            std::path::PathBuf::from(path)
+        };
+        TextToSpeech::load(path)?
+    } else if let Some(default_config) = default_config_path {
+        if default_config.exists() {
+            TextToSpeech::load(default_config)?
+        } else {
+            TextToSpeech::default()
+        }
+    } else {
+        TextToSpeech::default()
+    };
+    if let Some(speaker) = args.tts_speaker.clone() {
         tts = tts.tts_speaker(speaker);
     }
     if let Some(text) = &args.text {
-        tts.speech(text)?;
+        if let Some(output) = &args.output_file {
+            tts.speech_to_file(text, output)?;
+        } else {
+            tts.speech(text)?;
+        }
     }
     if args.text_stream {
         tts.stream_pipe()?;
     }
     if let Some(path) = &args.vedio_file {
-        play_file(&path)?;
+        play_file(path)?;
     }
     if args.file_stream {
         play_stream()?;

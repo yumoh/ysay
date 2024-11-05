@@ -7,7 +7,7 @@ edition = "2021"
 [[bin]]
 name="ysay"
 path="src/main.rs"
-required-features = ["build-bin"] 
+required-features = ["client"] 
 
 [lib]
 name="say"
@@ -16,13 +16,25 @@ path="src/lib.rs"
 [dependencies]
 log = "0.4"
 
-env_logger = {version = "0.9",optional = true}
+env_logger = {version = "0.11",optional = true}
 structopt={version = "0.3",optional = true}
 
 serde = { version = "1", features = ["derive"] }
-rodio = "0.15"
+serde_json = "1.0.132"
+
+rodio = {version = "0.19"}
 hound = "3.4.0"
-ureq = {version="2.4",features=["json","charset","native-certs","tls"]}
+reqwest = { version = "0.12", features = [
+    "json",
+    "rustls-tls",
+    "blocking",
+    "stream",
+], default-features = false }
+toml = "0.8.19"
+homedir = "0.3.4"
+dirs = "5.0.1"
+
 
 [features]
-build-bin = ["env_logger","structopt"]
+default=["client"]
+client = ["env_logger","structopt"]

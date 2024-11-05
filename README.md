@@ -1,6 +1,7 @@
 # 简单语音播放器
 
 ### 使用
+
 ```bash
 say 0.3.0
 
@@ -21,6 +22,7 @@ OPTIONS:
 ARGS:
     <text>    消息主体文本
 ```
+
 - say --sf < 1.wav
 - say "雨墨世界红尘，一道线隔绝了阴阳生死。"
 - say -s < speech.txt
@@ -28,6 +30,5 @@ ARGS:
 ### 其它
 
 1.[tts服务](https://git.yumolab.cn:8088/ai-go/tts-serve2)
-2. on linux do `sudo apt-get install libasound2-dev` 
-
-
+2. on linux do `sudo apt-get install libasound2-dev`
+3. on macos do `brew install llvm@15 llvm@16 llvm@18`

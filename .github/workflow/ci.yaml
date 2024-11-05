@@ -1,0 +1,21 @@
+name: build web
+on: 
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-local:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: build executable
+        run: cargo build --release --features client 
+      - name: upload
+        run: yumos upload target/release/ysay tools/yumos/say-$(uname)-$(arch)
